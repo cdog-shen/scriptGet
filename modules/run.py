@@ -1,4 +1,5 @@
 from http.server import SimpleHTTPRequestHandler, HTTPServer
+from functools import partial
 from public_import import *
 
 
@@ -13,16 +14,15 @@ def file_tree(startpath) -> bytes:
             tree_str += f"{subindent}{file}\n"
     return tree_str.encode()
 
-
 class SGHandler(SimpleHTTPRequestHandler):
 
     def do_GET(self) -> None:
-        '''
+        """
         route hint:
             /       ->      home info page
             /ls     ->      script file tree
             /<file> ->      get script
-        '''
+        """
         if self.path == "/":
             self.send_response(200)
             self.end_headers()
@@ -34,10 +34,15 @@ class SGHandler(SimpleHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(file_tree("script"))
         else:
-            super().do_GET()  # 其他请求就用默认的处理方式     
+            super().do_GET()  # 其他请求就用默认的处理方式
+
+
+def gen_serviceHandler(httpHandler=SGHandler, dir='docs'):
+    return partial(httpHandler, directory=dir)
 
 
 if __name__ == "__main__":
     print("run module test...")
-    server = HTTPServer(("0.0.0.0", 60000), SGHandler)
+    serviceHandler = partial(SGHandler, directory='docs')
+    server = HTTPServer(("0.0.0.0", 60000), serviceHandler)
     server.serve_forever()
