@@ -49,7 +49,7 @@ class generator:
         # del with ls
         ls = self.genTo + "/ls.html"  # type: ignore
         context = file_tree(self.scriptDir).decode('utf-8')
-        os.system(f"echo {context} > {ls}")
+        os.system(f"echo '{context}' > {ls}")
         # deal with script response
         for root, dirs, files in os.walk(self.scriptDir):  # type: ignore
             relative_path = os.path.relpath(root, self.scriptDir)  # type: ignore
