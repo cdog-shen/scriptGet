@@ -1,4 +1,5 @@
 from public_import import *
+from run import file_tree
 from shutil import copyfile
 
 
@@ -11,17 +12,6 @@ def file_list(startpath) -> list:
 
 
 class generator:
-
-    # def __init__(
-    #     self,
-    #     scriptLocation: str = "script",
-    #     gen_to: str = "_post",
-    #     logLocation: str = "logs/gen_" + time.strftime(r"%Y-%m-%d_%H:%M:%S") + ".log",
-    # ) -> None:
-    #     self.allFile = file_list(scriptLocation)
-    #     self.genTo = gen_to
-    #     self.logHandler = log_handler(logLocation)
-    #     self.__say()
 
     def __init__(self, conf_dict):
         if conf_dict is tuple:
@@ -51,6 +41,16 @@ class generator:
         self.logHandler.close()
 
     def __gen(self):
+        # deal with index
+        index = self.genTo + "/index.html"  # type: ignore
+        os.system(
+            f"echo 'welcome to scriptGet, request to '/ls' to check script file tree :)' > {index}"
+        )
+        # del with ls
+        ls = self.genTo + "/ls.html"  # type: ignore
+        context = file_tree(self.scriptDir)
+        os.system(f"echo {context} > {ls}")
+        # deal with script response
         for root, dirs, files in os.walk(self.scriptDir):  # type: ignore
             relative_path = os.path.relpath(root, self.scriptDir)  # type: ignore
             dest_path = os.path.join(self.genTo, relative_path)  # type: ignore
