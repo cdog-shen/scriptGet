@@ -45,13 +45,21 @@ def gen_serviceHandler(httpHandler=SGHandler, dir="docs"):
 if __name__ == "__main__":
     print("run module test...")
     try:
+        import threading
+
         serviceHandler = partial(SGHandler, directory="docs")
         server = HTTPServer(("0.0.0.0", 60000), serviceHandler)
-        server.serve_forever()
+        testThread = threading.Thread(target=server.serve_forever)
+        testThread.start()
     except Exception as E:
         print(f"Error: {str(E)}")
-    
+
     import os, time
-    if os.system(f'curl localhost:60000') == 0:
+
+    time.sleep(3)
+    if os.system(f"curl localhost:60000") == 0:
         print("test Success !")
+        exit()
+    else:
+        print("Error !")
         exit()
