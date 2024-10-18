@@ -14,6 +14,7 @@ def file_tree(startpath) -> bytes:
             tree_str += f"{subindent}{file}\n"
     return tree_str.encode()
 
+
 class SGHandler(SimpleHTTPRequestHandler):
 
     def do_GET(self) -> None:
@@ -37,12 +38,20 @@ class SGHandler(SimpleHTTPRequestHandler):
             super().do_GET()  # 其他请求就用默认的处理方式
 
 
-def gen_serviceHandler(httpHandler=SGHandler, dir='docs'):
+def gen_serviceHandler(httpHandler=SGHandler, dir="docs"):
     return partial(httpHandler, directory=dir)
 
 
 if __name__ == "__main__":
     print("run module test...")
-    serviceHandler = partial(SGHandler, directory='docs')
-    server = HTTPServer(("0.0.0.0", 60000), serviceHandler)
-    server.serve_forever()
+    try:
+        serviceHandler = partial(SGHandler, directory="docs")
+        server = HTTPServer(("0.0.0.0", 60000), serviceHandler)
+        server.serve_forever()
+    except Exception as E:
+        print(f"Error: {str(E)}")
+    
+    import os, time
+    if os.system(f'curl localhost:60000') == 0:
+        print("test Success !")
+        exit()
