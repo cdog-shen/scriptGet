@@ -21,4 +21,4 @@ jobs:
     - uses: actions/checkout@v4
     - name: Test server
       run: |
-        python3 module/run.py
+        python3 modules/run.py
