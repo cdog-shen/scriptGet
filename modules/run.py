@@ -50,6 +50,7 @@ if __name__ == "__main__":
         serviceHandler = partial(SGHandler, directory="docs")
         server = HTTPServer(("0.0.0.0", 60000), serviceHandler)
         testThread = threading.Thread(target=server.serve_forever)
+        testThread.daemon = True
         testThread.start()
     except Exception as E:
         print(f"Error: {str(E)}")
